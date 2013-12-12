@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Lesson>
+<Category name="Alle">
+<Deck>
+<Card Frontside="iyi günler" Backside="Guten Tag" DateCreated="08-Sep-2006 10:53:04" DateTouched="27-Nov-2006 13:23:14" DateTested="27-Nov-2006 13:22:49" TestsTotal="12" TestsHit="1"/>
+<Card Frontside="Allaha ismarladik" Backside="Auf Wiedersehen" DateCreated="08-Sep-2006 10:53:47" DateTouched="27-Nov-2006 13:23:25" DateTested="27-Nov-2006 13:22:49" TestsTotal="10" TestsHit="1"/>
+</Deck>
+<Deck/>
+<Deck>
+<Card Frontside="Günaydin" Backside="Guten Morgen" DateCreated="08-Sep-2006 10:52:11" DateTouched="27-Nov-2006 13:22:55" DateTested="27-Nov-2006 13:22:49" DateExpired="01-Dec-2006 13:22:49" TestsTotal="7" TestsHit="2"/>
+<Card Frontside="Merhaba" Backside="Grüß Dich, Hallo" DateCreated="08-Sep-2006 10:51:11" DateTouched="27-Nov-2006 13:23:06" DateTested="27-Nov-2006 13:22:49" DateExpired="01-Dec-2006 13:22:49" TestsTotal="6" TestsHit="4"/>
+</Deck>
+<Deck>
+<Card Frontside="Tetschekkür ederim" Backside="Danke" DateCreated="08-Sep-2006 10:56:23" DateTouched="02-Oct-2006 13:06:41" DateTested="02-Oct-2006 13:05:21" DateExpired="01-Nov-2006 12:05:21" TestsTotal="3" TestsHit="3"/>
+<Card Frontside="Lütfen" Backside="Bitte" DateCreated="08-Sep-2006 10:53:55" DateTouched="02-Oct-2006 13:06:47" DateTested="02-Oct-2006 13:05:21" DateExpired="01-Nov-2006 12:05:21" TestsTotal="3" TestsHit="3"/>
+</Deck>
+</Category>
+</Lesson>

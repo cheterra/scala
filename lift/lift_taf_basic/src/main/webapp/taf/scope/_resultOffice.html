@@ -1,0 +1,46 @@
+<div>
+  <table>
+      <thead>
+        <tr>
+            <th><span class="lift:Loc.Agency">Agency</span></th>
+            <th><span class="lift:Loc.Business Unit">Business Unit</span></th>
+            <th><span class="lift:Loc.Chain">Chain</span></th>
+            <th><span class="lift:Loc.Corporation">Corporation</span></th>
+            <th><span>ag</span></th>
+            <th><span>bu</span></th>
+            <th><span>ch</span></th>
+            <th><span>co</span></th>
+            <th><span class="lift:Loc.Select">Select</span></th>
+        </tr>
+      </thead>
+
+      <tbody class="lift:SelectedOffice.list">
+              <tr>
+                  <td><a item:agency_href=""><span><item:agency/></span></a></td>
+                  <td><a item:bu_href=""><span><item:bu/></span></a></td>
+                  <td><a item:chain_href=""><span><item:chain/></span></a></td>
+                  <td><a item:coop_href=""><span><item:coop/></span></a></td>
+                  <td><a item:a_href="">ag</a></td>
+                  <td><a item:b_href="">bu</a></td>
+                  <td><a item:c_href="">ch</a></td>
+                  <td><a item:d_href="">co</a></td>
+                  <td><a item:select_href=""><span class="lift:Loc.Select">Select</span></a></td>
+              </tr>
+      </tbody>
+  </table>
+  <!-- 
+  <span class="lift:SelectedOffice.makeLinkExportText">
+	<div>Export as <a exptxt:a_href=""><span>text</a> to Clipboard</div>
+  </span>
+  <span class="lift:SelectedOffice.makeLinkExportCsv">
+	<div>Export as <a expcsv:a_href=""><span>csv</a> to Clipboard</div>
+  </span>
+   -->
+   
+  <span class="lift:SelectedOffice.makeLinkExport">
+	<div>Export as <a exp:clip_href=""><span>text</a> to clipboard or <a exp:file_href=""><span>csv</a> to file</div>
+  </span>
+  
+  
+  <span class="hint">   (_resultOffice.html -> lift:SelectedOffice.list) </span>
+</div>

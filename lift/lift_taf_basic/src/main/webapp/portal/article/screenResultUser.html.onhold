@@ -1,0 +1,12 @@
+<!--  encoding = UTF-8 -->
+<div id="main" class="lift:surround?with=default;at=content">
+  <div class="description">
+    User list
+  </div>
+
+  <div class="large"><h1>    User  </h1></div>
+  <span class="lift:embed?what=portal/article/_resultUser">
+	replaced with embedded content
+  </span>
+
+</div>

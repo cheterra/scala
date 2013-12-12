@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Lesson>
+<Category name="All">
+<Deck/>
+<Category name="Le temps">
+<Deck/>
+<Category name="Lektion 57">
+<Deck/>
+<Category name="I.">
+<Deck>
+<Card Backside="Elle aurait dû venir." DateCreated="19-Apr-2012 10:14:46" DateTouched="19-Apr-2012 10:14:46" Frontside="Elle n'est pas venue." TestsHit="0" TestsTotal="0"/>
+<Card Backside="Ils auraient dû répondre à sa lettre." DateCreated="19-Apr-2012 10:15:10" DateTouched="19-Apr-2012 10:15:10" Frontside="Ils n'ont pas répondu à sa lettre." TestsHit="0" TestsTotal="0"/>
+<Card Backside="Vous auriez dû freiner." DateCreated="19-Apr-2012 10:16:24" DateTouched="19-Apr-2012 10:16:24" Frontside="Vous n'aez pas freiné." TestsHit="0" TestsTotal="0"/>
+</Deck>
+</Category>
+<Category name="II.">
+<Deck>
+<Card Backside="Vous n'auriez pas dû freiner." DateCreated="19-Apr-2012 10:16:01" DateTouched="19-Apr-2012 10:16:01" Frontside="Vous avez freinè." TestsHit="0" TestsTotal="0"/>
+<Card Backside="Si vous n'aviez pas accéléré, on ne serait pas entré en collision." DateCreated="19-Apr-2012 10:17:56" DateTouched="19-Apr-2012 10:17:56" Frontside="Vaus avez accéléré; c'est pourquoi on est entré en collision." TestsHit="0" TestsTotal="0"/>
+<Card Backside="Si vous n'aviez pas freiné, je n'aurais pas accéléré." DateCreated="19-Apr-2012 10:18:36" DateTouched="19-Apr-2012 10:18:36" Frontside="Vous avez freiné; c'est pourquoi j'ai accéléré." TestsHit="0" TestsTotal="0"/>
+</Deck>
+</Category>
+</Category>
+</Category>
+</Category>
+</Lesson>

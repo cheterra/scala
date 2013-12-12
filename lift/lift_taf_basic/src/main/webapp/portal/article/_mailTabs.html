@@ -1,0 +1,82 @@
+<div>
+   <form method="post" id="edit_mail">
+  
+<!-- 
+  <table>
+      <thead>
+        <tr>
+            <th><span class="lift:Loc.PID">PID</span></th>
+            <th><span class="lift:Loc.Name">Name</span></th>
+        </tr>
+      </thead>
+
+      <tbody class="lift:SelectedMail.mails">
+              <tr>
+                  <td><span><item:mail/></span></a></td>
+                  <td><span><item:trans/></span></a></td>
+              </tr>
+      </tbody>
+  </table>
+-->  
+  <div id="mail2">
+  <div class="lift:SelectedMail.mailTabs?id_name=cnt_id;id_msgs=messages">
+	    <div class="tabpanel">
+	      <item:tab1><span>New     </span></item:tab1>
+	      <item:tab2><span>Change  </span></item:tab2>
+	      <item:tab3><span>Storno  </span></item:tab3>
+	    </div>
+    <div class="xxx">
+	    <br></br>
+          <p>Mail Type: <span id="mailexp5"><item:mailexp/></span></p>
+	<!--       
+	    <item:clicker>
+	      <span>Click me to increase the count (currently <span id='cnt_id'>0</span>)</span>
+	      <div class="mail"><span id='trans2'>Sehr geehrte</span></div>
+	    </item:clicker>
+	-->  
+	 
+	<!--     
+	      <div>Select the mail type you want to edit:</div> 
+	      <span><item:emailcreate/></span>Create
+	      <span><item:emailmodify/></span>Modify
+	      <span><item:emailcancel/></span>Cancel
+	-->  
+          <p><span id="mailtype5"><item:mailtype/></span></p>
+	      Subject:
+	      <!-- <p><input name="subject" type="text" size="80" maxlength="100" item:subject="param"/></p>  -->
+	      <p><span id="subject5"><item:subject/></span></p>
+	      
+	      <span id='body5'><item:body/></span>
+	<!-- 
+	      <div class="info">
+	          <p> <span><item:trans/></span> </p>
+	      </div>
+	-->      
+	      <div class="mail"><span id='trans5'><item:trans/>Sehr geehrter</span></div>
+	      <!-- <p><input name="saveMail"   type="submit" value="Save email"></p>  -->
+	      <p><span><item:submit/></span></p>
+	</div>
+	
+  <span class="hint"> produclineids with mails: 
+4
+46
+80
+115
+125
+145
+189
+199
+211
+225
+267
+268
+  </span>
+  
+  <br></br>
+
+	
+    <span class="hint"> (_mailTabs.html -> lift:SelectedMail.mails)     productlineid: <span><item:productlineid/></span> </span>
+  </div>
+  </div>
+  </form>
+</div>

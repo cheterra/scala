@@ -1,0 +1,22 @@
+<div>
+
+	    <table id="show_all" class="show_all">
+	      <thead>
+	        <tr>
+	          <th><crud:header_item/></th>
+	          <th>&nbsp;</th>
+	          <th>&nbsp;</th>
+	          <th>&nbsp;</th>
+	        </tr>
+	      </thead>
+	      <tbody>
+	          <tr><td><crud:row/></td></tr>
+	      </tbody>
+	      <tfoot>
+	        <tr>
+	          <td colspan="6"><crud:prev>&lt;</crud:prev>&nbsp;<crud:next>&gt;</crud:next> </td>
+	        </tr>
+	      </tfoot>
+	    </table>
+</div>
+	    

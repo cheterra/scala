@@ -1,0 +1,77 @@
+<div>
+      
+
+  <form method="post" id="tab2" class="lift:SelectedProduct.show">
+      <input name="productid" type="hidden" item:productid="0">
+      
+	  <div class="description">
+	    Edit &nbsp;&nbsp;&nbsp;&nbsp; <span></span><item:name/>Product name</span>
+	  </div>
+
+    <table class="edit_class" id="edit_page">
+      
+        <tr>
+          <td>Name</td>
+          <td>
+              <input name="name" type="text" maxlength="16" item:name="ALDER">
+          </td>
+        </tr>
+      
+        <tr class="xyz">
+          <td>Description</td>
+          <td>
+            <input name="description" type="text" size="64" maxlength="80" item:description="Amadeus Policy Arranger">
+          </td>
+        </tr>
+      
+
+        <tr class="xyz">
+          <td>Product Line</td>
+          <td>
+            <input name="productlineid" type="text" size="16" item:productlineid="Amadeus Policy Arranger">
+          </td>
+        </tr>
+      
+      
+        <tr class="xyz">
+          <td>Product Type</td>
+          <td><item:producttype/></td>
+        </tr>
+      
+      
+        <tr class="xyz">
+          <td>Enable Email</td>
+          <td>
+            <span><item:emailenable/></span>enable           
+            <span><item:emaildisable/></span> <span>disable</span>
+          </td>
+        </tr>
+      
+      
+        <tr class="xyz">
+          <td>View in </td>
+          <td><item:licensegroup/></td>
+        </tr>
+      
+      
+        <tr class="xyz">
+          <td>License Type</td>
+          <td><item:licensetype/></td>
+        </tr>
+      
+      
+
+      <tr>
+        <td><input name="cancel" type="submit" value="Cancel"></td>
+        <td><input name="save"   type="submit" value="Save"></td>
+      </tr>
+    </table>
+  <span class="hint"> (_productDetails.html -> lift:SelectedProduct.show)</span>
+  </form>
+
+ 
+
+      </div>
+
+
+  </div>

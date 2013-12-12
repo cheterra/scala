@@ -1,0 +1,44 @@
+<div>
+  <table>
+      <thead>
+        <tr>
+            <th><span class="lift:Loc.Agency">Agency</span></th>
+            <th><span class="lift:Loc.Business Unit">Business Unit</span></th>
+            <th><span class="lift:Loc.Customer">Customer</span></th>
+            <th><span class="lift:Loc.Company">Company</span></th>
+            <th><span class="lift:Loc.Corporation">Corporation</span></th>
+            <th><span>ag</span></th>
+            <th><span>bu</span></th>
+            <th><span>cp</span></th>
+            <th><span>cr</span></th>
+        </tr>
+      </thead>
+
+      <tbody class="lift:SelectedPerson.list">
+              <tr>
+                  <td><a item:agency_href=""><span><item:agency/></span></a></td>
+                  <td><item:bu/></td>
+                  <td><a item:cust_href=""><span><item:cust/></span></a></td>
+                  <td><a item:comp_href=""><span><item:comp/></span></a></td>
+                  <td><a item:corp_href=""><span><item:corp/></span></a></td>
+<!--                   <td><a item:select_href=""><span class="lift:Loc.Select">Select</span></a></td> -->
+                  <td><a item:ag_href="">ag</a></td>
+                  <td><a item:bu_href="">bu</a></td>
+                  <td><a item:cp_href="">cp</a></td>
+                  <td><a item:cr_href="">cr</a></td>
+              </tr>
+      </tbody>
+  </table>
+
+  <span class="lift:SelectedPerson.makeLinkExport">
+	<div>Export as <a exp:clip_href=""><span>text</a> to clipboard or <a exp:file_href=""><span>csv</a> to file</div>
+  </span>
+  
+  <!-- 
+  <div>
+  <a onclick="window.open('/taf/export','Exported','width=400,height=200')" href="#">Export as text ...</a>
+  <div>
+   -->
+
+  <span class="hint"> (_resultPerson.html -> lift:SelectedPerson.list)</span>
+  </div>

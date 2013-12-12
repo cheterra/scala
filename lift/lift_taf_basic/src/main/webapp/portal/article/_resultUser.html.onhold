@@ -1,0 +1,21 @@
+<div>
+  <table>
+      <thead>
+        <tr>
+            <th><span class="lift:Loc.PID">PID</span></th>
+            <th><span class="lift:Loc.Name">Name</span></th>
+        </tr>
+      </thead>
+
+      <tbody class="lift:SelectedUser.list">
+              <tr>
+                  <td><a item:pid_href=""><span><item:pid/></span></a></td>
+                  <td><a item:name_href=""><span><item:name/></span></a></td>
+<!--                  <td><a item:cr_href="">cr</a></td> -->
+              </tr>
+      </tbody>
+  </table>
+
+
+  <span class="hint"> (_resultUser.html -> lift:SelectedUser.list)</span>
+  </div>

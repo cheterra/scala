@@ -1,0 +1,10 @@
+<div id="main" class="lift:surround?with=default;at=content">
+  <div>
+    The org-cust parameters associated
+    <span class="hint">(office.html embeds _resultOrgCust)</span>
+  </div>
+
+  <span class="lift:embed?what=taf/_resultOrgCust">
+	replaced with embedded content
+  </span>
+</div>

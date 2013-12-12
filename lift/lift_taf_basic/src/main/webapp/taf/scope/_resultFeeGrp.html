@@ -1,0 +1,51 @@
+<div>
+  <table>
+      <thead>
+        <tr>
+            <th><span class="lift:Loc.feeGrpId">FeeGrpId</span></th>
+            <th><span class="lift:Loc.groupName">Name</span></th>
+            <th><span class="lift:Loc.validFrom">Valid From</span></th>
+            <th><span class="lift:Loc.validTo">Valid To</span></th>
+            <th><span class="lift:Loc.state">State</span></th>
+            <th><span class="lift:Loc.orgId">OrgId</span></th>
+        </tr>
+      </thead>
+
+      <tbody class="lift:SelectedFeeGrp.list">
+              <tr>
+                  <td><a item:feegrpid_href=""><span><item:feegrpid/></span></a></td>
+                  <td><item:groupname/></td>
+                  <td><item:validfrom/></td>
+                  <td><item:validto/></td>
+                  <td><item:state/></td>
+                  <td><item:orgid/></td>
+              </tr>
+      </tbody>
+
+      <tfoot class="lift:SelectedFeeGrp.footer">  
+         <tr>  
+           <td colspan="6">
+              <span class="lift:Loc.rows">Rows</span>:&nbsp;&nbsp;<crud:count>{count}</crud:count>
+           </td>  
+         </tr>  
+      </tfoot>  
+      
+  </table>
+  
+  <!--  Error handling  -->
+  <p>
+  <span class="lift:Msg?id=exception&errorClass=error">error</span>
+  </p>
+  
+  <span class="lift:SelectedFeeGrp.makeLinkExport">
+	<div>Export as <a exp:clip_href=""><span>text</a> to clipboard or <a exp:file_href=""><span>csv</a> to file</div>
+  </span>
+  
+  <!-- 
+  <div>
+  <a onclick="window.open('/taf/export','Exported','width=400,height=200')" href="#">Export as text ...</a>
+  <div>
+   -->
+
+  <span class="hint"> (_resultFeeGrp.html -> lift:SelectedFeeGrp.list)</span>
+</div>

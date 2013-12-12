@@ -1,0 +1,49 @@
+<!--  encoding = UTF-8 -->
+<div id="main" class="lift:surround?with=default;at=content">
+  <div class="description">
+    Zombie Fees
+  </div>
+ That are fees with variant ids which do not exist in TAF_T_SERVICE_CODE_VARIANT_VGV
+ 
+<pre>
+-- find zombies, (flight) variants in fee models which do not exist anymore
+select * from taf_t_fee, taf_t_fee_grp g where substr(VARIANT_ID,0,2) not in 
+(
+  select distinct substr(VARIANT_ID,0,2) from TAF_T_SERVICE_CODE_VARIANT_VGV
+  where SERVICE_CODE not in 
+  (
+    select SERVICE_CODE from taf_t_service_code_desc where category = 'R'
+  )
+)
+and SERVICE_CODE in ('9948', '9945', '9944', '9406', '9407', '9408')
+and f.FEE_GRP_ID = g.FEE_GRP_ID
+and g.VALID_TO > TO_DATE('29.04.2011', 'DD.MM.YYYY')
+
+-- delete zombies, (flight) variants in fee models which do not exist anymore
+delete from taf_t_fee where substr(VARIANT_ID,0,2) not in 
+(
+  select distinct substr(VARIANT_ID,0,2) from TAF_T_SERVICE_CODE_VARIANT_VGV
+  where SERVICE_CODE not in 
+  (
+    select SERVICE_CODE from taf_t_service_code_desc where category = 'R'
+  )
+)
+and SERVICE_CODE in ('9948', '9945', '9944', '9406', '9407', '9408')  
+</pre>
+  
+  <div class="large">    Zombies  </div>
+  <span class="lift:embed?what=taf/zombies/_resultZombies">
+	replaced with embedded content
+  </span>
+
+<div class="info">
+  <p>TODO:</p>
+    <ul>
+		<li>We should have a view to display that</li>
+		<li>The result form _resultFeeGrp is not sufficient here </li>
+		<li>One division for fee, fee_grp, orga</li>
+		<li>but how to do without redundant database queries? </li>
+		<li>fligth/rail should be optional, not hardcoded</li>
+    </ul>
+  </div>
+</div>

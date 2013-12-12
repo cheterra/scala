@@ -1,0 +1,38 @@
+<div>
+  <table>
+      <thead>
+        <tr>
+            <th><span class="lift:Loc.Customer">Customer</span></th>
+            <th><span class="lift:Loc.Agency">Agency</span></th>
+            <th><span class="lift:Loc.Businessunit">Business unit number</span></th>
+            <th><span class="lift:Loc.Chain">Chain</span></th>
+            <th><span class="lift:Loc.Cooperation">Cooperation</span></th>
+        </tr>
+      </thead>
+
+      <tbody class="lift:HelpdeskOffice.list">
+              <tr>
+                  <td><item:startnr/></td>
+                  <td><item:agency/></td>
+                  <td><item:bu/></td>
+                  <td><item:chain/></td>
+                  <td><item:coop/></td>
+              </tr>
+      </tbody>
+  </table>
+  <!-- 
+  <span class="lift:SelectedOffice.makeLinkExportText">
+	<div>Export as <a exptxt:a_href=""><span>text</a> to Clipboard</div>
+  </span>
+  <span class="lift:SelectedOffice.makeLinkExportCsv">
+	<div>Export as <a expcsv:a_href=""><span>csv</a> to Clipboard</div>
+  </span>
+   -->
+   
+  <span class="lift:HelpdeskOffice.makeLinkExport">
+	<div>Export as <a exp:clip_href=""><span>text</a> to clipboard or <a exp:file_href=""><span>csv</a> to file</div>
+  </span>
+  
+  
+  <span class="hint">   (_resultOffice.html -> lift:HelpdeskOffice.list) </span>
+</div>

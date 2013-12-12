@@ -1,0 +1,34 @@
+<div id="main" class="lift:surround?with=default&at=content">
+  <div>
+    Using Lift's SHtml.onSubmit, we've got better control
+    over the form processing.
+  </div>
+  
+  <div>
+    <form class="lift:GrammarResponse?form=post">
+      <span class="lift:embed?what=france/_subject">
+	     replaced with embedded content
+      </span>
+      Question: <input size="80" name="card"><br>
+      Solution: <input size="80" name="response"><br>
+      <input type="submit" value="Continue">
+      <input type="submit" value="Cancel">
+      <div>
+      Response: 
+      <span class="lift:GrammarResponse.response">
+	      <div><item:result/></div>	      
+      </span>
+      </div>
+    </form>
+  </div>
+  
+  <div class="description">
+    TODO
+    <ul>
+    <li> The name of that snippet should be result and not response.</li>
+    <li> TODO cancel, home, skip, save, load </li>
+    </ul>
+  </div>
+  
+  <span class="hint">(france/grammar_response.html, was onsubmit.html)</span>
+</div>

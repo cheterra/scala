@@ -1,0 +1,16 @@
+</div>
+
+<div id="main" class="lift:surround?with=default&at=content">
+  <div>
+    Using RequestVars to store state
+  </div>
+      
+  <div>
+    <form class="lift:ScreenSelectFeeTable?form=post">
+      Agency: <input name="ag"><br>
+      Business Unit: <input name="bu" id="the_bu" value="1234"><br>
+      Age: <input name="age" id="the_age" value="0"><br>
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+</div>

@@ -1,0 +1,38 @@
+<div id="main" class="lift:surround?with=default;at=content">
+  This is #index# in the rest directory.
+  We server simple 3, 4, 5, 6 and 7 requests with the BasicWithHelper.scala
+  <div>
+    <ul>
+      <li>Not found: <a href="/simple3/item/1299">localhost:8880/simple3/item/1299 yields: Item not found</a></li>
+      <li>Cat Food: <a href="/simple3/item/1234.xml">localhost:8880/simple3/item/1234.xml Not correct, should be XML and not JSON</a></li>
+      <li>Dog Food: <a href="/simple3/item/1235/xml">localhost:8880/simple3/item/1235/xml</a></li>
+      <li>Cat Food: <a href="/simple3/item/1234">localhost:8880/simple3/item/1234 Accept: application/xml</a></li>
+      <li>curl -i -H "Accept: application/xml" http://localhost:8880/simple3/item/1234</li>
+      <li>Dog Food: <a href="/simple4/item/1235.xml">localhost:8880/simple4/item/1235.xml</a></li>
+      <li>Dog Food: <a href="/simple4/item/1235/xml">localhost:8880/simple4/item/1235/xml</a></li>
+      <li>Not there: <a href="/simple4/item/9999.xml">localhost:8880/simple/item/9999.xml</a></li>
+      <li>Should say: The item you're looking for isn't here</li>
+      <li>But in fact it says: The Requested URL /simple4/item/9999.xml was not found on this server</li>
+      <li>Fish Food: <a href="/simple4/item/1236">localhost:8880/simple4/item/1236</a></li>
+      <li>Fish Food: <a href="/simple4/item/1236.xml">localhost:8880/simple4/item/1236.xml</a></li>
+      <li>Not there: <a href="/simple5/item/9999">localhost:8880/simple5/item/9999</a></li>
+      <li>Sloth Food: <a href="/simple5/item/1237">localhost:8880/simple5/item/1237</a></li>
+      <li>All Food:   <a href="/simple5/item">localhost:8880/simple5/item/</a></li>
+      <li>Sloth Food: <a href="/simple6/item/1237">localhost:8880/simple6/item/1237</a></li>
+      <li>Cat Food:   <a href="/simple6/item/1234">localhost:8880/simple6/item/1234.xml Accept: application/xml</a></li>
+      <li>Not there: <a href="/simple6/item/1299">localhost:8880/simple6/item/1299</a></li>
+      <li>Not there: <a href="/simple6/item/other/">localhost:8880/simple6/item/other/</a></li>
+      <li>Should say: The item you're looking for isn't here</li>
+      <li>Should not work but it does: <a href="/simple6/item/other/1234">http://localhost:8880/simple6/item/other/1234</a></li>
+
+      <li>Sloth Food: <a href="/simple7/item/1237">localhost:8880/simple7/item/1237</a></li>
+      <li>Cat Food:   <a href="/simple7/item/1234">localhost:8880/simple7/item/1234.xml Accept: application/xml</a></li>
+      <li>Not there: <a href="/simple7/item/1299">localhost:8880/simple7/item/1299</a></li>
+      <li>Not there: <a href="/simple7/item/other/">localhost:8880/simple7/item/other/</a></li>
+      <li>Should say: The item you're looking for isn't here</li>
+      <li>Should not work but it does: <a href="/simple7/item/other/1234">http://localhost:8880/simple7/item/other/1234</a></li>
+    </ul>
+  </div>
+
+</div>
+

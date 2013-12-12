@@ -1,0 +1,31 @@
+<div>
+  <table>
+      <thead>
+        <tr>
+            <th><span class="lift:Loc.orgId">OrgId</span></th>
+            <th><span class="lift:Loc.orgName">OrgName</span></th>
+        </tr>
+      </thead>
+
+      <tbody class="lift:SelectedPaymentOrga.list">
+              <tr>
+                  <td><item:orgid/></td>
+                  <td><item:orgname/></td>
+              </tr>
+      </tbody>
+
+      <tfoot class="lift:SelectedPaymentOrga.footer">  
+         <tr>  
+           <td colspan="6">
+              <span class="lift:Loc.rows">Rows</span>:&nbsp;&nbsp;<crud:count>{count}</crud:count>
+           </td>  
+         </tr>  
+      </tfoot>  
+  </table>
+
+  <span class="lift:SelectedPaymentOrga.makeLinkExport">
+	<div>Export as <a exp:clip_href=""><span>text</a> to clipboard or <a exp:file_href=""><span>csv</a> to file</div>
+  </span>
+  
+  <span class="hint"> (_resultPayOrg.html -> lift:SelectedPaymentOrga.list)</span>
+</div>

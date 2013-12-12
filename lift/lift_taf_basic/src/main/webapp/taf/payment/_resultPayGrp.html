@@ -1,0 +1,41 @@
+<div>
+  <table>
+      <thead>
+        <tr>
+            <th width=200><span class="lift:Loc.orgName">OrgName</span></th>
+            <th width=200><span class="lift:Loc.groupName">GroupName</span></th>
+            <th><span class="lift:Loc.state">State</span></th>
+            <th><span class="lift:Loc.surcharge">Surcharge</span></th>
+            <th><span class="lift:Loc.vatid">VAT ID</span></th>
+            <th><span class="lift:Loc.salesdocumenttype">Sales Document Type</span></th>
+            <th><span class="lift:Loc.formofpayment">Form Of Payment</span></th>
+        </tr>
+      </thead>
+
+      <tbody class="lift:SelectedPaymentFee.list">
+              <tr>
+                  <td><item:orgname/></td>
+                  <td><item:groupname/></td>
+                  <td><item:state/></td>
+                  <td><item:surcharge/></td>
+                  <td><item:vatid/></td>
+                  <td><item:saledocumenttype/></td>
+                  <td><item:formofpayment/></td>
+              </tr>
+      </tbody>
+
+      <tfoot class="lift:SelectedPaymentFee.footer">  
+         <tr>  
+           <td colspan="6">
+              <span class="lift:Loc.rows">Rows</span>:&nbsp;&nbsp;<crud:count>{count}</crud:count>
+           </td>  
+         </tr>  
+      </tfoot>  
+  </table>
+
+  <span class="lift:SelectedPaymentFee.makeLinkExport">
+	<div>Export as <a exp:clip_href=""><span>text</a> to clipboard or <a exp:file_href=""><span>csv</a> to file</div>
+  </span>
+  
+  <span class="hint"> (_resultPayGrp.html -> lift:SelectedPaymentFee.list)</span>
+</div>
