@@ -42,7 +42,7 @@ class Board(middleground:Color = Color.lightGray) extends Component {
     // and we just draw the holes now
     (0 to 6).foreach(x => (0 to 6).foreach(y => setTile(x, y)))
     // move
-    ctr.doAllPossibleMoves
+    ctr.doImprovingMoves
   }
 
 }

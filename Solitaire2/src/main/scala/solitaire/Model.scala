@@ -6,13 +6,17 @@ import java.awt.Rectangle
 class Point (val x: Int, val y: Int) {
   def +(p: Point): Point = new Point(x + p.x, y + p.y)
   def *(n: Int): Point = new Point(x * n, y * n)
-  def <(p: Point): Boolean = x < p.x && y < p.y
-  def >(p: Point): Boolean = x > p.x && y > p.y
+  def <(p: Point): Boolean = x < p.x || y < p.y
+  def >(p: Point): Boolean = x > p.x || y > p.y
+  def check: Unit = if (x < -1 || y < -1) throw new Exception("invalid: " + toString())
   override def toString  (): String = "[" + x + ", " + y + "]"
 }
 
 /** the Tile is the pawn in game, the stick in solitaire, something which can be moved */
-class Tile (x: Int, y: Int)  extends Point(x, y)
+class Tile (x: Int, y: Int)  extends Point(x, y) {
+  if (x < 0) throw new IllegalArgumentException ("x must not be negative " + x)
+  if (y < 0) throw new IllegalArgumentException ("y must not be negative " + y)
+}
 
 /** a move is vector a stick can do in this game */
 class Move (x: Int, y: Int) extends Point(x, y)
@@ -41,8 +45,8 @@ class Model {
 
   /** the field map as array */
   var area = getArea
-  def area(p: Point): Char = area(p.y)(p.x)
-  def setArea(p: Point, ch: Char): Unit = { area(p.y)(p.y) = ch }
+  def area(p: Point): Char =  { area(p.y)(p.x) }
+  def setArea(p: Point, ch: Char): Unit = { area(p.y)(p.x) = ch }
   
   def reset = { area = getArea }
 
@@ -69,9 +73,12 @@ class Model {
    *  </ul> 
    */
   def canMove (t: Tile, m: Move): Boolean = {
-    if (t + m * 2 < P0) return false
-    if (t + m * 2 > P6) return false
+    var p2 = t + m * 2;
+    if (p2 < P0) return false
+    if (p2 > P6) return false
 
+    p2.check
+    
      // the first check is not really required if the precondition
      // is that this is an existing tile
     
@@ -100,6 +107,7 @@ class Model {
 
   /** Get all possible moves (up, down...) for this tile */
   def getAllMoves(t: Tile): List[RealMove] = {
+    t.check
     for (m <- moves if canMove(t, m) ) yield new RealMove(t, m)
   }
 
@@ -117,6 +125,9 @@ class Model {
   def show() = {
     area.foreach(showLine( _ ))
   }
+  
+  // debug
+  def dump(moves: Seq[RealMove]) = moves.foreach ( n => println("--" + n))
 
   // not used
   def showLine(line: Array[Char]) = {

@@ -3,6 +3,7 @@ package solitaire
 class Controller {
   
   val mod: Model = new Model()
+  val jone: JustOne = new JustOne(mod)
 
   /** the sticks which are left at the end of the game,
    *  and minimum means that we adjust this value after each game
@@ -65,6 +66,26 @@ class Controller {
     }
     minTiles = Math.min(minTiles, mod.getAllTiles().size)
     println ("Min. tiles: " + minTiles)
+  }
+
+  /** 
+   *  do all moves 
+   *  until there are no possible moves left
+   *  and try to improve the next move  
+   */
+  def doImprovingMoves() {
+    mod.reset
+    var moves = jone.select()
+    while (!moves.isEmpty) {
+      // choose one of the possible moves randomly
+      val n = rand(moves.size)
+      jone.add(moves(n))
+      mod.doMove(moves(n))
+      moves = mod.getAllMoves
+    }
+    var left = mod.getAllTiles().size
+    minTiles = Math.min(minTiles, left)
+    jone.improve(left);
   }
 
 }
