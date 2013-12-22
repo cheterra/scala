@@ -19,7 +19,6 @@ class Board(middleground:Color = Color.lightGray) extends Component {
   val imgField: BufferedImage = ImageIO.read(new File("src/main/resources/field.png"))
   val imgHole:  BufferedImage = ImageIO.read(new File("src/main/resources/hole2.png"))
 
-  //val mod: Model = new Model()
   val ctr: Controller = new Controller()
 
   preferredSize = new Dimension(500, 500)
@@ -43,6 +42,8 @@ class Board(middleground:Color = Color.lightGray) extends Component {
     (0 to 6).foreach(x => (0 to 6).foreach(y => setTile(x, y)))
     // move
     ctr.doImprovingMoves
+    //ctr.do2abImprovingMoves
+    
   }
 
 }
@@ -50,11 +51,11 @@ class Board(middleground:Color = Color.lightGray) extends Component {
 object Board extends SimpleSwingApplication {
   def top = new MainFrame {
     title = "Solitaire"
-   try { 
-     contents = new Board()
-   } catch {
-     case e: Exception => e.printStackTrace()
-   }
+    try {
+      contents = new Board()
+    } catch {
+      case e: Exception => e.printStackTrace()
+    }
   }
 
 }

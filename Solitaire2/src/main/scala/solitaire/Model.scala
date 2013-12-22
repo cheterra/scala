@@ -64,6 +64,8 @@ class Model {
   /** four moves: up, down, left, right */
   val moves = List(up, down, left, right)
 
+  def canMove (m: RealMove): Boolean  = canMove(m.tile, m.move)
+  
   /** 
    * Moves are limited: 
    *  <ul>

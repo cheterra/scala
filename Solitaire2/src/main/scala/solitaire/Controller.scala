@@ -75,7 +75,8 @@ class Controller {
    */
   def doImprovingMoves() {
     mod.reset
-    var moves = jone.select()
+    jone.select()
+    var moves = mod.getAllMoves
     while (!moves.isEmpty) {
       // choose one of the possible moves randomly
       val n = rand(moves.size)
@@ -88,4 +89,53 @@ class Controller {
     jone.improve(left);
   }
 
+  /** 
+   *  do all moves 
+   *  until there are no possible moves left
+   *  and try to improve the next move  
+   */
+  def do2aImprovingMoves() {
+    mod.reset
+    jone.select()
+    var moves = mod.getAllMoves
+    // choose one of the possible moves randomly
+    val n = rand(moves.size)
+    jone.add(moves(n))
+    mod.doMove(moves(n))
+    moves = mod.getAllMoves
+  }
+
+  /** 
+   *  do all moves 
+   *  until there are no possible moves left
+   *  and try to improve the next move  
+   */
+  def do2bImprovingMoves() {
+    var moves = mod.getAllMoves
+    while (!moves.isEmpty) {
+      // choose one of the possible moves randomly
+      val n = rand(moves.size)
+      jone.add(moves(n))
+      mod.doMove(moves(n))
+      moves = mod.getAllMoves
+    }
+    var left = mod.getAllTiles().size
+    minTiles = Math.min(minTiles, left)
+    jone.improve(left);
+  }
+
+  var count: Int = 0;
+  /** 
+   *  do all moves 
+   *  until there are no possible moves left
+   *  and try to improve the next move  
+   */
+  def do2abImprovingMoves() {
+    if (count % 2 == 0)
+      do2aImprovingMoves;
+    else
+      do2bImprovingMoves;
+    count = count + 1
+  }
+  
 }
