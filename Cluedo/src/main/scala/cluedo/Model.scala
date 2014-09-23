@@ -28,9 +28,6 @@ class RealMove(val tile: Tile, val move: Move) {
 
 /** Model - contains the data */
 class Model {
-  val setup = new Setup();
-  val round = setup.run
-  for( a <- 1 to 10) { round.run }
   
   /** The game */
   val areaBase = List (

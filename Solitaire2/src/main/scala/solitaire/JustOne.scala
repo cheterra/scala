@@ -2,7 +2,7 @@ package solitaire
 
 import com.sun.org.glassfish.external.statistics.Stats
 
-class Statistics (val left: Int) {  
+class Statistics (var left: Int) {  
 //  var index: Int = -1
     var restartIdx: Int = -1
     var counter = 1
@@ -15,7 +15,11 @@ class Statistics (val left: Int) {
     }
 
     def average: Int = sumLeft / counter;
-    def update(left: Int) = sumLeft = sumLeft + left; minLeft = math.min(minLeft, left)
+    def update(left: Int) = {
+      this.left = left;
+      sumLeft = sumLeft + left;
+      minLeft = math.min(minLeft, left)
+    }
     
     override def toString  (): String = "[ idx: " + restartIdx+ ", c: " + counter + ", l: " + left + ", min: " + minLeft + ", av: " + average + "]"
 }
@@ -65,7 +69,7 @@ class MedRedStrategy (games: List[Game], mod: Model)
     // copy restart index from last game
     if (stat.counter == 1 && games.size > 1)
       stat.restartIdx = games(1).stat.restartIdx
-    if (stat.left < 4 && stat.average <= 4 && stat.counter > 5)
+    if (stat.left < 3 && stat.average <= 4 && stat.counter > 5 && stat.restartIdx < 20)
       stat.restartIdx = stat.restartIdx + 1;
     medium = stat.restartIdx;
     //medium = getMoves.size / 2;
@@ -86,7 +90,7 @@ class MedRedStrategy (games: List[Game], mod: Model)
   
   override def getBestGames: List[Game] = {
     // if the average results are too bad remove that game
-    if (games.size >= 1 && games(0).stat.average >= 7)
+    if (games.size >= 1 && games(0).stat.average >= 6)
       return games.tail;
 
     // remove games which are not so good
