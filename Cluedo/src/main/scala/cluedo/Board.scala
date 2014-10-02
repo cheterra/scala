@@ -27,7 +27,12 @@ object Board extends SimpleSwingApplication {
       //contents = new Board()
       val setup = new Setup();
       val round = setup.run
+      // solver
+      val solver = new cluedo.solver.RoundListener(round);
+      round.lis = solver;
       for( a <- 1 to 10) { round.run }
+      // last one
+      solver.solver.run
 
     } catch {
       case e: Exception => e.printStackTrace()

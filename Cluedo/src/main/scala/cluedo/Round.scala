@@ -1,8 +1,19 @@
 package cluedo
 
 
+/** Will be informed about actions in the round */
+class Listener {
+  def action(player: Player, www: List[Card]): Unit = 
+    println(player.name + " question: --- " + www);
+  
+  def action(player: Player, www: Option[Card]): Unit = 
+    println(player.name + " answer:\t " + www);
+}
 
-class Round (group: Players, cards: Cards) { 
+/** One round, leader is asking, other players responding */
+class Round (val group: Players, val cards: Cards) { 
+  
+  var lis: Listener = new Listener;
   
   /** demand random three cards, one from each category */
   private def demand: List[Card] = return cards.random3;
@@ -12,19 +23,13 @@ class Round (group: Players, cards: Cards) {
     Option[Card] = player.showOneOf(www)
   
   /** all other players must answer if they can */
-  def answerLoop(www: List[Card] ) = {
-    group.other.foreach(p => store(p, answer(p, www)) ); 
-  }
+  def answerLoop(www: List[Card] ) = 
+    group.other.foreach(p => lis.action(p, answer(p, www)) ); 
   
-  def store(player: Player, www: List[Card]): Unit = 
-    println(player.name + " question: --- " + www);
-  
-  def store(player: Player, www: Option[Card]): Unit = 
-    println(player.name + " answer:\t " + www);
   
   def run = {
     val www = demand;
-    store(group.leader, www)
+    lis.action(group.leader, www)
     answerLoop(www);
     group.nextLeader
   };

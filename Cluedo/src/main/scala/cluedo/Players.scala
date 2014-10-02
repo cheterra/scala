@@ -10,6 +10,13 @@ class Player(val name: String) {
   def showOneOf(demand: List[Card]): Option[Card] = cards.intersect(demand).headOption
 
   override def toString() = name + " (" + cards.map( "---" + _).toString + ")";
+  
+  /** equal if name is equal */
+  override def equals(o: Any) = o match {
+    case that: Player => that.name.equalsIgnoreCase(this.name)
+    case _ => false
+  }
+  override def hashCode = name.toUpperCase.hashCode  
 }
 
 /** The players, have a leader and his opponents, can choose next leader */
@@ -32,6 +39,15 @@ class Players (val names: List[String]) {
   def nextLeader = { leader = next }
   /** all players but not the leader */
   def other: List[Player] = players.diff(List(leader));
+  
+  /** move the round until we reach the leader */
+  def selectLeader(newLeader: Player) {
+    nextLeader;
+    if (leader.equals(newLeader))
+      return;
+    else
+      selectLeader(newLeader);
+  }
   
   override def toString() = players.map( _ + ",\n").toString;
 }

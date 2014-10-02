@@ -5,6 +5,14 @@ import scala.collection.mutable.Stack
 /** Cards like 'who' */
 class Card(val name: String, val cat: String) {
 	override def toString() = name + " (" + cat + ")";
+	
+	  /** equal if name is equal */
+  override def equals(o: Any) = o match {
+    case that: Card => that.name.equalsIgnoreCase(this.name)
+    case _ => false
+  }
+  override def hashCode = name.toUpperCase.hashCode  
+
 }
 
 /** Cards e.g. Persons and Locations and so on */
@@ -45,6 +53,7 @@ class Talon(val cards: Seq[Card]) {
   val who:   Option[Card]   = find("who")
   val where: Option[Card]   = find("where")
   val what:  Option[Card]   = find("what")
+  /** all cards, one for each category, Option unpacked */
   lazy val all: List[Card] = List(who, where, what).flatten;
   
   def find(category: String): Option[Card] = cards.find( _.cat.equals(category))

@@ -13,6 +13,8 @@ class Setup {
 			println("talon: " + talon);
 			distributeCards(stack.all, thePlayers);
 			println("players:\n" + thePlayers)
+			// who should start?
+			thePlayers.selectLeader(thePlayers.leader)
 			return new Round(thePlayers, theCards);
 	}
 
