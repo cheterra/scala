@@ -6,9 +6,9 @@ class RoundListener(game: cluedo.Round) extends cluedo.Listener {
   val solver: Solver = new Solver(game);
   
   override  def action(player: Player, www: List[Card]): Unit = {
-    super.action(player, www);
     // compute the results of the former round
     solver.run
+    super.action(player, www);
     solver.add(new Question(player, www));
   }      
   
@@ -35,7 +35,8 @@ class Round(val qst: Question) {
     // remove the cards we have already sorted out
     .diff(removedCards);
   /** get all cards shown, remove options (but you know only the amount) */
-  def nCards: Int =  ansList.map(_.www).flatten.length;
+  lazy val nCards: Int =  ansList.map(_.www).flatten.length;
+  
   /** get all players which have shown a card */
   def shower: List[Player] =
     // remove empty options, e.g. players who have not shown a card
@@ -54,22 +55,28 @@ class Round(val qst: Question) {
   // E.g. a 2 player will become a 1 player type
   var removedCards: List[Card] = List()
   var removedPlayers: List[Player] = List()
-  def removeCard(card: Card) = removedCards = card :: removedCards
-  def removePlayer(player: Player) = removedPlayers = player :: removedPlayers
+  private def removeCard(card: Card) = removedCards = (card :: removedCards).removeDuplicates
+  private def removePlayer(player: Player) = removedPlayers = (player :: removedPlayers).removeDuplicates
   def remove(player: Player, card: Card) = { removePlayer(player); removeCard(card); }
     
   var removees: List[Removee] = List();
-  def addRemovee(removee: Removee) = removees = removee :: removees;
-    
+  def addRemovee(removee: Removee) = removees = (removee :: removees).removeDuplicates;
+
+  var addees: List[Addee] = List();
+  def addAddee(addee: Addee) = addees = (addee :: addees).removeDuplicates;
+
   var solutions: List[Solution] = List();
   def addSolution(sol: Solution) = solutions = sol :: solutions
   //def spreadSolutions(sol: Solution, player: Player, card: Card) = getPlayersFor(card).foreach {_.addSolution(sol)}
   
+  override def toString() = "shower: " + shower.length + ", cards shown: " + nCards + ", cards left: " + cards.length + ", rem: " + removees.length + ", add: " + addees.length;
+  def dump: String = "round:\n-  shower: " + shower + ",\n-  cards left: " + cards;
+
 }
 
 	
-class Removee(val card: Card, val player: Testee) {}
-class Addee(val card: Card, val player: Player) {}
+class Removee( val player: Testee, val card: Card) {}
+class Addee(val player: Player, val card: Card) {}
 
 class Testees (val names: List[String]) {
   lazy val testees: List[Testee] = makePlayers(names)
@@ -88,18 +95,26 @@ class Testee(name: String) extends Player(name: String) {
   /** List with two or three cards and the player owns one of them */
   var ownedMaybeList: List[Round] = List()
   //var solutions: List[Solution] = List();
+  // mark that this cards are not in the players possession
   def markHasNot(cards: List[Card]) = {
+    // if that card is already marked then give up
+    val toBeRemoved = cards.diff(notOwnedCards);
     // mark has not
-    notOwnedCards = cards ::: notOwnedCards;
+    notOwnedCards = toBeRemoved ::: notOwnedCards;
     // and remove those cards from the maybe list
-    cards.foreach(removeMaybe(_))
+    toBeRemoved.foreach(removeMaybe(_))
   }
   // add cards (rounds) to maybe list but not if the card is already on the 'has not' list
   def markMaybeLists(round: Round) = {
     // is it already clear that this player does not own the card?
-    val badCards = round.cards.intersect(notOwnedCards)
-    if (!badCards.isEmpty)
+    val badCards: List[Card] = round.cards.intersect(notOwnedCards)
+    if (!badCards.isEmpty) {
       println (name +": bad cards: " + badCards)
+      // try what says the remove solution
+      val testee: Testee = this;
+      badCards.foreach(card => { Solution(new Removee(testee, card), ownedMaybeList) })
+//       badCards.foreach( Solution(new Removee(testee, _), ownedMaybeList) )
+    }
     if (badCards.isEmpty)
       ownedMaybeList = round :: ownedMaybeList;
   }
@@ -120,23 +135,11 @@ class Testee(name: String) extends Player(name: String) {
     
   /** if the testee has not a card the card/player/group must be removed from the maybe list */
   private def removeMaybe(card: Card) = {
-      // this player is part of all those groups because it his own list
-      //val updatingGroups: List[List[Player]] =  getMaybeCardGroups(card);
-      //if (!updatingGroups.isEmpty)
-      //  println("updating groups: " + updatingGroups)
-      // the updating group should only contain one element
-      
-      // TEST
-      //val len = ownedMaybeList.length;
       // if the group in maybe list contains the card the group should be removed from the list
       // er, no. Not really. In fact only this one card should be removed
-//      ownedMaybeList = ownedMaybeList.filter(!_.cards.contains(card))
-//      if (len > ownedMaybeList.length)
-//        println (name + ": maybe has been removed: " + ownedMaybeList.map(_.cards))
-      val removee: Removee = new Removee(card, this);
+      val removee: Removee = new Removee(this, card);
 //      val sol: Solution = new SolutionRemove(removee, ownedMaybeList.filter(_.cards.contains(card)));
       val sol: Solution = Solution(removee, ownedMaybeList.filter(_.cards.contains(card)));
-      //solutions = sol :: solutions;
       sol.solve;
   }
   
@@ -144,7 +147,7 @@ class Testee(name: String) extends Player(name: String) {
 }
 
 
-class Analyser(names: List[String]) {
+class Analyser(names: List[String], cards: List[Card]) {
   // 1. if a player has a card optionally in one round but not in an other round
   //   the player has not the card
   // 2. in that case the remaining players of the group are reduced
@@ -153,7 +156,8 @@ class Analyser(names: List[String]) {
   cluedo.solver.Solution.setHelper(helper);
   val testees: List[Testee] = helper.testees;
   
-  def search(round: Round) = {
+  // this is called for each new round
+  def investigate(round: Round) = {
     markPlayerHasNot(round);
     // mark for each player (including leader) that he (may) have this card(s)
     //    but not if the player already 'has not' this card
@@ -179,9 +183,18 @@ class Analyser(names: List[String]) {
   def markPlayerHasNot(round: Round) = {
     def otherPlayers: List[Testee] = {
 	    if (round.nCards == 0) {
+        // if the number of cards was 0 in that round then none 
+        //    of the other players has the card (apart the leader)
 	      println ("other: " + helper.other(List(round.leader)))
 	      return helper.other(List(round.leader))
+	    } else if (round.nCards == 3) {
+	      // he players showing the card may have the cards
+	      //   but the leader cannot have the cards
+	      println ("the leader " + round.leader + " cannot have the cards")
+	      return helper.other(round.shower)
 	    } else {
+	      // the players showing the card and the leader may have the
+	      //   card but all players who did not show a card have not the card.
 	      //println ("shower: " + round.shower )
 	      val players: List[Player]= round.leader :: round.shower;
 	      return helper.other(players)
@@ -194,12 +207,16 @@ class Analyser(names: List[String]) {
   /** three, two or one player may have all three cards */
   def markPlayerMayHave(round: Round) = {
     var players: List[Testee] = List()
+    // three players may have the card but not the leader
     if (round.nCards == 3) {
       players = helper.asTestee(round.shower);
     }
+    // two players and the leader and the talon may have the card
     else if (round.nCards > 0) {
       players = helper.asTestee(round.leader :: round.shower);
+      // TODO and talon
     }
+    // the leader and the talon may have the card but none of the players
     else if (round.nCards == 0) {
       players = helper.asTestee(List(round.leader));
       // TODO and talon
@@ -208,10 +225,10 @@ class Analyser(names: List[String]) {
     
   }
   
+  // this is called for each new round
   def combine(round: Round, rounds: List[Round]) {
     // if the player is in more than one group which may have this card
     //   we may identify this player as the owner of the card
-    //   1. the other players must be re-calculated
     //  Example: cards A B C   and C D E (C is common and each time player 1 shows a card)
     
     // players 1 - 3
@@ -219,38 +236,107 @@ class Analyser(names: List[String]) {
     val cards = round.cards;
     rounds.foreach (r => {
       val commonCards: List[Card] = r.cards.intersect(cards);
+      /*
+       *
+       * Note: This does not work if Gisela shows card A for one round and card B for another round: 
+found just one player: Gisela
+  and this player was the only one in both rounds:
+1. List(Draco Malfoy (who), Raum der Wünsche (where), Unsichtbarkeitsschrank (what))
+2. List(Peter Pettigrew (who), Zaubertränke (where), Unsichtbarkeitsschrank (what))
+SolutionAdd: have shower: 2, cards shown: 2, cards left: 3, rem: 0, add: 0
+SolutionAdd: player: Gisela (List(---Eulerei (where), ---Impedimenta (what), ---Zaubertränke (where), ---Raum der Wünsche (where)))
+  has got card: Unsichtbarkeitsschrank (what) 
+  
+  Here 'Unsichtbarkeitsschrank was common but Gisela has shown
+  - Raum der Wünsche
+  - Zaubertränke     
+  
+  Thus this rule is only valid for 3 answers in both rounds
+      */
       // just one card?  A B  - C - D E
-      if (commonCards.length == 1) {
+      // only valid for 3 shown cards
+      if (round.nCards == 3 && r.nCards == 3 && commonCards.length == 1) {
         val card = commonCards.head;
         println ("found just one card: " + card);
         // search common player
         val commonPlayers = r.shower.intersect(players)
         if (commonPlayers.length == 1) {
           val player = commonPlayers.head;
-          println("found just one player: " + commonPlayers.head + " and adding card " + commonCards.head);
-          helper.asTestee(player).addCard(card);
+          println("found just one player: " + commonPlayers.head.name);
+          println("  and this player was the only one in both rounds:\n1. " + round.cards + "\n2. " + r.cards);
+          // this player has the card
+          val addee = new Addee(player, card);
+          val sol: Solution = Solution(addee, rounds);
+          sol.solve(round);
+          // thus this player + card must be removed from both rounds
           round.remove(player, card);
+          // thus this player + card must be removed from both rounds
           r.remove(player, card);
+          // all other players and the leader do not have the card
         }
       }
     });
   }
   
+  /**
+  * In the talon there are three cards, one of each type.
+  * If we have confirmed one card of type A in the talon
+  * each player which is the only owner of type A must have this card
+  */
+  def analyseTalon(round: Round) {
+    val analysers: List[AnalyseTalonCard] = cards.map(new AnalyseTalonCard(testees, _));
+    // talon cards = card with 0 players
+    val talonCards = analysers.filter(_.isTalonCard).map(_.card)
+    talonCards.foreach(talon => {
+      // if the category matches than assign the card to the owner
+      analysers.foreach(_.assign(round, talon.cat))
+    });
+  }
+
   def showCard(card: Card): List[String] = testees.map { _.showCard(card) }
   
   override def toString() = "  testees: " + testees
 }
 
+class AnalyseTalonCard(testees: List[Testee], val card: Card) {
+  
+  /** testees which are not the owner of this card */
+  val notOwners: List[Testee] =  testees.filter(_.notOwnedCards.contains(card))
+  /** card with 0 players must be in talon */
+  lazy val isTalonCard: Boolean = notOwners.length == testees.length
+  /** card with one possible owner */
+  lazy val isCardOnePlayer: Boolean = notOwners.length == testees.length - 1
+  /** Possible owners of the card - subtract all players which are not owners */ 
+  lazy val possiblyOwner: List[Testee] =  testees.diff(notOwners)  
+  
+  // now check the category and assign all one-cards with that category to the owner
+  def assign(round: Round, talonCat: String): Unit = {
+    // possibly owner = 1
+    if (!isCardOnePlayer)
+      return;
+    // category must match
+    if (!card.cat.equals(talonCat))
+      return;
+    println("since the card of category " + talonCat 
+        + " is in the talon a player with only one card of that type must be the owner of that card");
+    possiblyOwner.foreach(owner => Solution(new Addee(owner, card), owner.ownedMaybeList).solve(round))
+  }
+  
+}
+
 class Solver(game: cluedo.Round) {
   
-  val watson = new Analyser(game.group.players.map(_.name));
+  def names: List[String] = game.group.players.map(_.name)
+  val cards: List[Card] = new cluedo.Cards().all;
+  val watson = new Analyser(names, cards);
   var rounds: List[Round] = List();  
   
   def add(qst: Question) = rounds = new Round(qst) :: rounds;
   def add(ans: Answer) = rounds.head.add(ans)
   def run = if (!rounds.isEmpty) {
-    watson.search(rounds.head); 
+    watson.investigate(rounds.head); 
     watson.combine(rounds.head, rounds.tail)
+    watson.analyseTalon(rounds.head);
     showResult;
   }
   
@@ -261,9 +347,7 @@ class Solver(game: cluedo.Round) {
     //println ("watson: " + watson)
   }
   
-  def names: List[String] = game.group.players.map(_.name)
   def header = game.group.names.foreach { n => print( " ... " + n) }; println;
-  val cards: List[Card] = new cluedo.Cards().all;
   def body   = cards.foreach { c => line(c) };
   def fill(len: Int): String = "                          ".substring(len)
   def line(card: Card) = print (card.name + fill(card.name.length) + ": ---" + playersHave(card) + "\n");
