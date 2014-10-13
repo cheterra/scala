@@ -32,6 +32,7 @@ import cluedo.Card
 //}
 
 class Solutions(val ctx: Context) {
+  
 	def solve(removee: Removee, round: Round): Unit = 
 	  new SolutionRemove(removee, ctx).solve(round);
 	
@@ -44,13 +45,17 @@ class Solutions(val ctx: Context) {
 
 
 class Solution(ctx: Context) {
+  // not used
   var solved: Boolean = false;
   
   //def solve: Unit = { rounds.foreach(solve(_)) };
   def solve(rounds: List[Round]): Unit =  { rounds.foreach(solve(_)) };
   def solve(round: Round): Unit = {}
-  
+  // shortcut
   def solve(addee: Addee, round: Round): Unit = new SolutionAdd(addee, ctx).solve(round)
+  // TEST
+  // injection
+  //def asTestee(f: Context => List[Testee])
 }
 
 //class Solutions {
@@ -60,9 +65,6 @@ class SolutionRemove(removee: Removee, ctx: Context) extends Solution(ctx) {
   // if the group in maybe list contains the card the group should be removed from the list
   // er, no. Not really. In fact only this one card should be removed
   override def solve (round: Round) = {
-    // TODO add removee on other place
-    //rounds.foreach(_.addRemovee(removee))
-    
     if (round.shower.length == 3 && round.nCards == 3)  {
       new SolutionRemove3_3(removee, ctx).solve(round); 
     } else if (round.shower.length == 2 && round.nCards == 3 && round.cards.length == 2) {
@@ -135,8 +137,10 @@ Gisela: bad cards: List(Verteidigung gdd Künste (where))
       val notOwners: List[Testee] = player.filter(_.notOwnedCards.contains(card));
       val remainingPlayers = player.diff(notOwners);
       if (remainingPlayers.length == 1 && round.nCards == 3) {
-        println("two players " + notOwners 
-            + " have not the card " + card + " thus the remaining one (" + remainingPlayers + ") must have the card");
+//        println("two players " + notOwners 
+//            + " have not the card " + card + " thus the remaining one (" + remainingPlayers + ") must have the card");
+        println("two players " + notOwners.map(_.name) 
+            + " have not the card " + card + " thus the remaining one (" + remainingPlayers.head.name + ") must have the card");
         remainingPlayers.foreach(p => solve(new Addee(p, card), round))
         // TODO and accordingly Heike and Gisela have the other two cards mutually exclusive
         new SolutionMutualExclusive(ctx).solve(round);
@@ -227,6 +231,7 @@ class SolutionAdd(addee: Addee, ctx: Context) extends Solution(ctx) {
   }
 }
 
+/** Simply add a card to the players possession. Remove the card from the other players */
 class SolutionAdd1(addee: Addee, ctx: Context) extends Solution(ctx) {
   override def solve (round: Round): Unit = {
     // if the player has already the card we do not need to add it a second time
