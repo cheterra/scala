@@ -40,8 +40,6 @@ class Testee(name: String) extends Player(name: String) {
         // if there are two players left and two cards, they own those cards mutually exclusive
         if (round.nCards == 2)
           sol.solve(round)
-          //sol.solve(round);
-          //new Solution(ownedMaybeList).solve(round);
       }
       val isLeader = this.equals(round.leader);
       // bad cards length = 2 is a good thing. This player must have the third card
@@ -52,7 +50,6 @@ class Testee(name: String) extends Player(name: String) {
       } 
       else
         badCards.foreach(card => { sol.solve(new Removee(testee, card), round) })
-        //badCards.foreach(card => { Solution(new Removee(testee, card), ownedMaybeList).solve(round) })
     }
     if (badCards.isEmpty)
       ownedMaybeList = round :: ownedMaybeList;
@@ -77,7 +74,6 @@ class Testee(name: String) extends Player(name: String) {
     // if the group in maybe list contains the card the group should be removed from the list
     // er, no. Not really. In fact only this one card should be removed
     val removee: Removee = new Removee(this, card);
-    //Solution(removee, ownedMaybeList.filter(_.cards.contains(card))).solve;
     val rounds = ownedMaybeList.filter(_.cards.contains(card));
     rounds.foreach( round => {
       round.addRemovee(removee); 

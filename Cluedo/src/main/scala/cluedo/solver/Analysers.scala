@@ -9,7 +9,6 @@ class Analyser(names: List[String], cards: List[Card]) {
   //   the player has not the card
   // 2. in that case the remaining players of the group are reduced
   // find the groups with same question cards
-  //val ctx: Testees = new Testees(names);
   val testees: List[Testee] = Testee.makePlayers(names);
   val ctx = new Context(testees)
   val sol: Solutions = new Solutions(ctx);
@@ -41,26 +40,6 @@ class Analyser(names: List[String], cards: List[Card]) {
    * markPlayerHasNot the card(s). Mark store the round completely.
    */
   def markPlayerHasNot(round: Round) = {
-//    def otherPlayers: List[Testee] = {
-//	    if (round.nCards == 0) {
-//        // if the number of cards was 0 in that round then none 
-//        //    of the other players has the card (apart the leader)
-//	      println ("other: " + ctx.other(List(round.leader)))
-//	      return ctx.other(List(round.leader))
-//	    } else if (round.nCards == 3) {
-//	      // he players showing the card may have the cards
-//	      //   but the leader cannot have the cards
-//	      println ("the leader " + round.leader + " cannot have the cards")
-//	      return ctx.other(round.shower)
-//	    } else {
-//	      // the players showing the card and the leader may have the
-//	      //   card but all players who did not show a card have not the card.
-//	      //println ("shower: " + round.shower )
-//	      val players: List[Player]= round.leader :: round.shower;
-//	      return ctx.other(players)
-//	    }
-	    
-//    }
 
     val players: List[Player] = round.nCards match {
 	      case 0 => 
@@ -79,10 +58,8 @@ class Analyser(names: List[String], cards: List[Card]) {
 		      //println ("shower: " + round.shower )
 		      round.leader :: round.shower;
 	    }
-
       //  other players                has not      cards
       ctx.other(players).foreach(_.markHasNot(round.cards))
-    //otherPlayers.foreach(_.markHasNot(round.cards))
   }
 
   /**
@@ -91,21 +68,6 @@ class Analyser(names: List[String], cards: List[Card]) {
    *    but not if the player already 'has not' this card
    */
   def markPlayerMayHave(round: Round) = {
-//    var players: List[Testee] = List()
-//    // three players may have the card but not the leader
-//    if (round.nCards == 3) {
-//      players = ctx.asTestee(round.shower);
-//    }
-//    // two players and the leader and the talon may have the card
-//    else if (round.nCards > 0) {
-//      players = ctx.asTestee(round.leader :: round.shower);
-//      // TODO and talon
-//    }
-//    // the leader and the talon may have the card but none of the players
-//    else if (round.nCards == 0) {
-//      players = ctx.asTestee(List(round.leader));
-//      // TODO and talon
-//    }
     val players: List[Player] = round.nCards match {
       // the leader and the talon may have the card but none of the players
       case 0 =>     List(round.leader);
@@ -122,14 +84,8 @@ class Analyser(names: List[String], cards: List[Card]) {
     // if the player is in more than one group which may have this card
     //   we may identify this player as the owner of the card
     //  Example: cards A B C   and C D E (C is common and each time player 1 shows a card)
-    
-    // players 1 - 3
-    val players = round.shower;
-    val cards = round.cards;
-    rounds.foreach (r => {
-      val commonCards: List[Card] = r.cards.intersect(cards);
+
       /*
-       *
        * Note: This does not work if Gisela shows card A for one round and card B for another round: 
 found just one player: Gisela
   and this player was the only one in both rounds:
@@ -145,6 +101,12 @@ SolutionAdd: player: Gisela (List(---Eulerei (where), ---Impedimenta (what), ---
   
   Thus this rule is only valid for 3 answers in both rounds
       */
+    
+    // players 1 - 3
+    val players = round.shower;
+    val cards = round.cards;
+    rounds.foreach (r => {
+      val commonCards: List[Card] = r.cards.intersect(cards);
       // just one card?  A B  - C - D E
       // only valid for 3 shown cards
       if (round.nCards == 3 && r.nCards == 3 && commonCards.length == 1) {
@@ -209,7 +171,7 @@ private class AnalyseTalonCard(testees: List[Testee], val card: Card, val sol: S
     if (!card.cat.equals(talonCat))
       return;
     // TEST
-    println("possibly owner length: " + possiblyOwner.length)
+    //println("possibly owner length: " + possiblyOwner.length)
     println("since the card of category '" + talonCat 
         + "' is in the talon a player with only one card of that type must be the owner of that card");
     possiblyOwner.foreach(owner => sol.solve(new Addee(owner, card), round))

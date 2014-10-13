@@ -30,7 +30,7 @@ object Board extends SimpleSwingApplication {
       // solver
       val solver = new cluedo.solver.RoundListener(round);
       round.lis = solver;
-      for( a <- 1 to 10) { round.run }
+      for( a <- 1 to 20) { round.run }
       // last one
       solver.solver.run
 

@@ -2,7 +2,10 @@ package cluedo.solver
 
 import cluedo.Card
 
-
+/** 
+ * Covering class of solution which provides the Context for
+ * the other solution classes
+ */
 class Solutions(val ctx: Context) {
   
 	def solve(removee: Removee, round: Round): Unit = 
@@ -15,7 +18,7 @@ class Solutions(val ctx: Context) {
 	  new SolutionMutualExclusive().solve(round);  
 
 
-	class Solution {
+	private class Solution {
 	  //def solve: Unit = { rounds.foreach(solve(_)) };
 	  def solve(rounds: List[Round]): Unit =  { rounds.foreach(solve(_)) };
 	  def solve(round: Round): Unit = {}
@@ -26,10 +29,8 @@ class Solutions(val ctx: Context) {
 	  //def asTestee(f: Context => List[Testee])
 	}
 	
-	//class Solutions {
-	  
 	/** Removing a card */	
-	class SolutionRemove(removee: Removee) extends Solution {
+	private class SolutionRemove(removee: Removee) extends Solution {
 	  // if the group in maybe list contains the card the group should be removed from the list
 	  // er, no. Not really. In fact only this one card should be removed
 	  override def solve (round: Round) = {
@@ -39,36 +40,13 @@ class Solutions(val ctx: Context) {
 	      new SolutionRemove2_2(removee).solve(round); 
 	    } else if (round.shower.length == 1                      && round.cards.length == 1) {
 	      new SolutionRemove1_1(removee).solve(round); 
-	//    } else if (round.shower.length == 0) {
-	//      new SolutionRemove0(removee, ctx).solve(round); 
-	    } else if (round.nCards == 2) {
-	      solve_2(round);
-	    } else
+	    } else if (round.cards.length < 3)
 	      println (" do not know what to do with " + round.shower.length + " players and " + round.nCards + " shown cards and remaining " + round.cards.length + " cards"); 
-	  }
-	
-	  // nCards = 2 e.g. two showers originally
-	  def solve_2 (round: Round) = {
-	     // println ("solve_2: do not know what to do with " + round.shower.length + " players and " + round.nCards + " shown cards and remaining " + round.cards.length + " cards"); 
-	     // if A has not card 1 and B has not card 1
-	     //    then A has card 2 and B has card 3 or vice versa
-	     // Solving possible if
-	     //   - A has not card 2 or 3
-	     //   - B has not card 2 or 3
-	     //   - A has card 2 or 3
-	     //   - B has card 2 or 3
-	     //val solution = new SolutionMutualExclusive(rounds: List[Round]);
-	     //solution.solve(round);
-	    
-	//      val missingCardsInCommon = cardsA.intersect.cardsB
-	//      if (round.shower.length == 3)  {
-	//        new SolutionRemove3_3(removee, rounds).solve(round); 
-	    
 	  }
 	
 	}
 	
-	class SolutionRemove3_3(removee: Removee) extends SolutionRemove(removee) {
+	private class SolutionRemove3_3(removee: Removee) extends SolutionRemove(removee) {
 	// in that case (3 answers) Frank has none of the cards he has asked for!
 	// in that case (neither Heike nor Gisela has the card), Julia must have 'Verteidigung gdd Künste'
 	//   and accordingly Heike and Gisela have the other two cards mutually exclusive
@@ -123,7 +101,7 @@ class Solutions(val ctx: Context) {
 	 * <p> Players: A, B, cards: 1, 2 </p>
 	 * if player A owns card 1 the player B owns card 2 and vice versa
 	 */
-	class SolutionRemove2_2(removee: Removee) extends SolutionRemove(removee) {
+	private class SolutionRemove2_2(removee: Removee) extends SolutionRemove(removee) {
 	  // if there are two players and two cards
 	  override def solve (round: Round) = {
 	    println("SolutionRemove2_2");
@@ -144,13 +122,13 @@ class Solutions(val ctx: Context) {
 	  }
 	}
 	
-	// unused, very rare
+	// very rare
 	/** 
 	 * This player was the only one who has shown a card (one of three) 
 	 * and now one (of three) has been removed
 	 * thus two are left
 	 */
-	class SolutionRemove1_1(removee: Removee) extends SolutionRemove(removee) {
+	private class SolutionRemove1_1(removee: Removee) extends SolutionRemove(removee) {
 	  // if there are two players and two cards
 	  override def solve (round: Round) = {
 	    println("SolutionRemove1_1");
@@ -173,22 +151,8 @@ class Solutions(val ctx: Context) {
 	  }
 	}
 	
-	// unused, very very rare
-	//class SolutionRemove0(removee: Removee, rounds: List[Round]) extends SolutionRemove(removee, rounds) {
-	//  // if there are two players and two cards
-	//  override def solve (round: Round) = {
-	//    //println("SolutionRemove0");
-	//    //println (" do not know what to do with " + round.shower.length + " players and " + round.nCards + " cards");
-	//    println (" this is a rare case. 0 players and cards: " + round.cards);
-	//    // solving possible if
-	//    //   - the leader has none of the card
-	//    //     but in that case no solving is required
-	//    //rounds.foreach {_.addSolution(this)}
-	//  }
-	//}
-	
 	/** We have found a player who has a card */
-	class SolutionAdd(addee: Addee) extends Solution {
+	private class SolutionAdd(addee: Addee) extends Solution {
 	  override def solve (round: Round) = {
 	    if (round.shower.length == 2 && round.nCards == 3 && round.cards.length == 2) {
 	      new SolutionAdd2_2(addee).solve(round);
@@ -199,17 +163,18 @@ class Solutions(val ctx: Context) {
 	}
 	
 	/** Simply add a card to the players possession. Remove the card from the other players */
-	class SolutionAdd1(addee: Addee) extends Solution {
+	private class SolutionAdd1(addee: Addee) extends Solution {
 	  override def solve (round: Round): Unit = {
 	    // if the player has already the card we do not need to add it a second time
 	    if (addee.player.cards.contains(addee.card))
 	      return
-	    println("SolutionAdd: have " +  round );
+	    //println("SolutionAdd: have " +  round );
 	    if (round.shower.length == 2 && round.nCards == 3 && round.cards.length == 3)
 	      println("we have 2 players and two cards, we can do something: \n  " + round.dump)
 	    // we have found a player who has a card
 	    ctx.asTestee(addee.player).addCard(addee.card)
-	    println("SolutionAdd: player: " + addee.player +  "  has got card: " + addee.card);
+	    //println("SolutionAdd: player: " + addee.player +  "  has got card: " + addee.card);
+	    println("SolutionAdd: player: " + addee.player.name +  "  has got card: " + addee.card);
 	    // since this player has the card, all other players do not have that card
 	    val others: List[Testee] = ctx.other(List(addee.player));
 	    others.foreach(_.markHasNot(List(addee.card)))
@@ -219,7 +184,7 @@ class Solutions(val ctx: Context) {
 	}
 	
 	/** Adding two players, two cards */
-	class SolutionAdd2_2(addee: Addee) extends SolutionAdd(addee) {
+	private class SolutionAdd2_2(addee: Addee) extends SolutionAdd(addee) {
 	  // if there are two players and two cards
 	  override def solve (round: Round) = {
 	    println("SolutionAdd2_2");
@@ -238,7 +203,7 @@ class Solutions(val ctx: Context) {
 	}
 	
 	// two players, two cards
-	class SolutionMutualExclusive extends Solution {
+	private class SolutionMutualExclusive extends Solution {
 	  // if there are two players and two cards
 	  override def solve (round: Round) = {
 	    //println("SolutionMutualExclusive");
@@ -346,6 +311,6 @@ Rule: if a shower has two bad cards, the third card must be his own
 * 
 * 
 * 
-* 
+*
 * 
 */
