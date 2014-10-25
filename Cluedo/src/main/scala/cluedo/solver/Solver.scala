@@ -85,7 +85,10 @@ class Solver(game: cluedo.Round) {
   def names: List[String] = game.group.players.map(_.name)
   val cards: List[Card] = new cluedo.Cards().all;
   val watson = new Analyser(names, cards);
-  var rounds: List[Round] = List();  
+  var rounds: List[Round] = List();
+  // set amount of owned cards
+  val pairs = watson.testees.zip(game.group.players);
+  pairs.foreach ( pair => { val (t, p) = pair; t.nCards = p.cards.length;} )
   
   def add(qst: Question) = rounds = new Round(qst) :: rounds;
   def add(ans: Answer) = rounds.head.add(ans)

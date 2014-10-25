@@ -1,13 +1,16 @@
 package cluedo.solver
 
 import cluedo.Player
+import cluedo.Card
 
-class Context (val testees: List[Testee]) {
+class Context (val testees: List[Testee], val cards: List[Card]) {
   /** all players but not the ones in the list */
   def other(player: List[Player]): List[Testee] = testees.diff(player);
+  def otherCards(theCards: List[Card]): List[Card] = cards.diff(theCards)
   /** convert  players into testees */
   def asTestee(player: List[Player]): List[Testee] = testees.filter(player.contains(_));
-  def asTestee(player: Player): Player = asTestee(List(player)).head
+  def asTestee(player: Player): Testee = asTestee(List(player)).head
+  
 }
 
 // ------------

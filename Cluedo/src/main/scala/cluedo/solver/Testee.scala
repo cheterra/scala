@@ -12,6 +12,10 @@ object Testee {
 class Testee(name: String) extends Player(name: String) {
   // @inject Solution
   var sol: Solutions = null;
+  /** we know from the beginning how many cards the player has */
+  var nCards: Int = 0;
+  /** we know all cards of that player */
+  def allCardsKnown: Boolean = nCards == cards.length
   
   var notOwnedCards: List[Card] = List()
   /** List with two or three cards and the player owns one of them */

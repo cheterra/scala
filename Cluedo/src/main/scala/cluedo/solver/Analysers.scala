@@ -10,7 +10,7 @@ class Analyser(names: List[String], cards: List[Card]) {
   // 2. in that case the remaining players of the group are reduced
   // find the groups with same question cards
   val testees: List[Testee] = Testee.makePlayers(names);
-  val ctx = new Context(testees)
+  val ctx = new Context(testees, cards)
   val sol: Solutions = new Solutions(ctx);
   Testee.injectSolution(testees, sol);
   
@@ -141,7 +141,7 @@ SolutionAdd: player: Gisela (List(---Eulerei (where), ---Impedimenta (what), ---
     // talon cards = card with 0 players
     val talonCards = analysers.filter(_.isTalonCard).map(_.card)
     talonCards.foreach(talon => {
-      // if the category matches than assign the card to the owner
+      // if the category matches then assign the card to the owner
       analysers.foreach(_.assign(round, talon.cat))
     });
   }
@@ -157,7 +157,7 @@ private class AnalyseTalonCard(testees: List[Testee], val card: Card, val sol: S
   val notOwners: List[Testee] =  testees.filter(_.notOwnedCards.contains(card))
   /** card with 0 players must be in talon */
   lazy val isTalonCard: Boolean = notOwners.length == testees.length
-  /** card with one possible owner */
+  /** card with one possible owner, example: 5 players, 4 are not the owner */
   lazy val isCardOnePlayer: Boolean = notOwners.length == testees.length - 1
   /** Possible owners of the card - subtract all players which are not owners */ 
   lazy val possiblyOwner: List[Testee] =  testees.diff(notOwners)  
@@ -172,8 +172,71 @@ private class AnalyseTalonCard(testees: List[Testee], val card: Card, val sol: S
       return;
     // TEST
     //println("possibly owner length: " + possiblyOwner.length)
-    println("since the card of category '" + talonCat 
-        + "' is in the talon a player with only one card of that type must be the owner of that card");
+    // print only if the player does not have the card yet, else it will be boring
+    if (! possiblyOwner.head.cards.contains(card))
+      println("since the card of category '" + talonCat + "' is in the talon" +
+        " a player with only one card of that type" +
+        "\n  must be the owner of that card (" + card + "): " + possiblyOwner.map(_.name));
+    // TODO there is still an error
+/*
+Heike question: --- List(Bellatrix Lestrange (who), Raum der Wünsche (where), Impedimenta (what))
+Anna answer:	 None
+Julia answer:	 Some(Impedimenta (what))
+Gisela answer:	 Some(Raum der Wünsche (where))
+Frank answer:	 Some(Bellatrix Lestrange (who))
+the leader Heike (List(---Portschlüssel (what), ---Dolores Umbridge (who), ---Verteidigung gdd Künste (where), ---Draco Malfoy (who))) cannot have the cards
+Julia: bad cards: List(Bellatrix Lestrange (who))
+SolutionRemove3_3: what to do with 0 removees and 0 addees
+two players List(Julia, Gisela) have not the card Bellatrix Lestrange (who) thus the remaining one (Frank) must have the card
+SolutionMutualExclusive: round: showers left: 3, cards shown: 3, cards left: 3, rem: 0, add: 0
+  shower: List(Frank (List(---Petrificus Totalus (what), ---Pokalzimmer (where), ---Bellatrix Lestrange (who))), Gisela (List(---Grabbe and Goyle (who), ---Raum der Wünsche (where), ---Wahrsagen (where), ---Peter Pettigrew (who))), Julia (List(---Krankenflügel (where), ---Alraune (what), ---Eulerei (where), ---Impedimenta (what)))) cards: List(Bellatrix Lestrange (who), Raum der Wünsche (where), Impedimenta (what))
+two players List(Gisela, Frank) have not the card Impedimenta (what) thus the remaining one (Julia) must have the card
+SolutionMutualExclusive: round: showers left: 3, cards shown: 3, cards left: 3, rem: 0, add: 0
+  shower: List(Frank (List(---Petrificus Totalus (what), ---Pokalzimmer (where), ---Bellatrix Lestrange (who))), Gisela (List(---Grabbe and Goyle (who), ---Raum der Wünsche (where), ---Wahrsagen (where), ---Peter Pettigrew (who))), Julia (List(---Krankenflügel (where), ---Alraune (what), ---Eulerei (where), ---Impedimenta (what)))) cards: List(Bellatrix Lestrange (who), Raum der Wünsche (where), Impedimenta (what))
+Gisela: bad cards: List(Bellatrix Lestrange (who), Impedimenta (what))
+Bad cards length = 2 is a good thing. Gisela must have the third card
+SolutionAdd: player: Gisela  has got card: Raum der Wünsche (where)
+Frank: bad cards: List(Raum der Wünsche (where), Impedimenta (what))
+Bad cards length = 2 is a good thing. Frank must have the third card
+found just one card: Bellatrix Lestrange (who)
+found just one card: Impedimenta (what)
+found just one player: Julia
+  and this player was the only one in both rounds:
+1. List(Bellatrix Lestrange (who), Raum der Wünsche (where), Impedimenta (what))
+2. List(Dolores Umbridge (who), Große Halle (where), Impedimenta (what))
+since the card of category 'what' is in the talon a player with only one card of that type must be the owner of that card
+SolutionAdd2_2
+SolutionAdd: player: Gisela  has got card: Bellatrix Lestrange (who)
+since the card of category 'what' is in the talon a player with only one card of that type must be the owner of that card
+SolutionAdd2_2
+since the card of category 'what' is in the talon a player with only one card of that type must be the owner of that card
+SolutionAdd2_2
+since the card of category 'what' is in the talon a player with only one card of that type must be the owner of that card
+SolutionAdd2_2
+ ... Anna ... Julia ... Heike ... Gisela ... Frank
+Bellatrix Lestrange       : --- List(-, -, -, X, X)
+Peter Pettigrew           : --- List(2, ?, -, ?, -)
+Draco Malfoy              : --- List(-, -, X, -, -)
+Lucius Malfoy             : --- List(?, 1, -, -, -)
+Dolores Umbridge          : --- List(-, -, X, -, -)
+Grabbe and Goyle          : --- List(-, -, -, X, -)
+Große Halle               : --- List(X, -, -, -, -)
+Krankenflügel             : --- List(?, ?, -, -, ?)
+Raum der Wünsche          : --- List(-, -, -, X, -)
+Zaubertränke              : --- List(X, -, -, -, -)
+Pokalzimmer               : --- List(-, ?, -, 2, ?)
+Wahrsagen                 : --- List(-, -, -, ?, -)
+Eulerei                   : --- List(-, 1, -, -, -)
+Bibliothek                : --- List(-, -, ?, -, -)
+Verteidigung gdd Künste   : --- List(-, -, X, -, -)
+Petrificus Totalus        : --- List(-, -, -, -, X)
+Schlafmittel              : --- List(X, -, -, -, -)
+Unsichtbarkeitsschrank    : --- List(-, -, -, -, -)
+Portschlüssel             : --- List(-, -, X, -, -)
+Alraune                   : --- List(3, ?, -, -, -)
+Impedimenta               : --- List(-, X, -, -, -)
+
+ */    
     possiblyOwner.foreach(owner => sol.solve(new Addee(owner, card), round))
   }
   

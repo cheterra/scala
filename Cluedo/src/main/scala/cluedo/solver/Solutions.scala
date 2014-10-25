@@ -41,7 +41,9 @@ class Solutions(val ctx: Context) {
 	    } else if (round.shower.length == 1                      && round.cards.length == 1) {
 	      new SolutionRemove1_1(removee).solve(round); 
 	    } else if (round.cards.length < 3)
-	      println (" do not know what to do with " + round.shower.length + " players and " + round.nCards + " shown cards and remaining " + round.cards.length + " cards"); 
+	      println (" do not know what to do with " + round.shower.length + " players and " + round.nCards + " shown cards and remaining " + round.cards.length + " cards");
+	    // try it
+	    new SolutionAllCardsRelated(removee).solve(round);
 	  }
 	
 	}
@@ -60,11 +62,14 @@ class Solutions(val ctx: Context) {
 	Gisela: bad cards: List(Verteidigung gdd Künste (where))
 	*/
 	  override def solve (round: Round) = {
-	    println ("SolutionRemove3_3: what to do with " + round.removees.length + " removees and " + round.addees.length + " addees");
+	    if (round.removees.length > 3 || round.addees.length > 1)
+	      println ("SolutionRemove3_3: what to do with " + round.removees.length + " removees and " + round.addees.length + " addees");
+	    else
+	      println ("SolutionRemove3_3");
 	    //println("The leader " + round.leader + " cannot have the cards");
 	    
 	    if (round.removees.length > 2) println("detail: " 
-	        + round + " r: " + round.removees);
+	        + round + " removed: " + round.removees.map(_.player.name));
 	    //println("there are two removees");
 	    // so which player rests?
 	    // example:
@@ -78,17 +83,15 @@ class Solutions(val ctx: Context) {
 	    
 	    // if two of the showers do not have this card
 	    //   the remaining one must have the card
-	    val player = ctx.asTestee(round.shower)
+	    val showers = ctx.asTestee(round.shower)
 	    round.cards.foreach (card => {
-	      val notOwners: List[Testee] = player.filter(_.notOwnedCards.contains(card));
-	      val remainingPlayers = player.diff(notOwners);
+	      val notOwners: List[Testee] = showers.filter(_.notOwnedCards.contains(card));
+	      val remainingPlayers = showers.diff(notOwners);
 	      if (remainingPlayers.length == 1 && round.nCards == 3) {
-	//        println("two players " + notOwners 
-	//            + " have not the card " + card + " thus the remaining one (" + remainingPlayers + ") must have the card");
 	        println("two players " + notOwners.map(_.name) 
 	            + " have not the card " + card + " thus the remaining one (" + remainingPlayers.head.name + ") must have the card");
 	        remainingPlayers.foreach(p => solve(new Addee(p, card), round))
-	        // TODO and accordingly Heike and Gisela have the other two cards mutually exclusive
+	        // and accordingly Heike and Gisela have the other two cards mutually exclusive
 	        new SolutionMutualExclusive().solve(round);
 	      }
 	    });
@@ -170,16 +173,51 @@ class Solutions(val ctx: Context) {
 	      return
 	    //println("SolutionAdd: have " +  round );
 	    if (round.shower.length == 2 && round.nCards == 3 && round.cards.length == 3)
-	      println("we have 2 players and two cards, we can do something: \n  " + round.dump)
+	      println("SolutionAdd1: we have 2 players and two cards, we can do something: \n  " + round.dump)
 	    // we have found a player who has a card
 	    ctx.asTestee(addee.player).addCard(addee.card)
-	    //println("SolutionAdd: player: " + addee.player +  "  has got card: " + addee.card);
-	    println("SolutionAdd: player: " + addee.player.name +  "  has got card: " + addee.card);
+	    println("SolutionAdd1: player: " + addee.player.name +  "  has got card: " + addee.card);
 	    // since this player has the card, all other players do not have that card
 	    val others: List[Testee] = ctx.other(List(addee.player));
 	    others.foreach(_.markHasNot(List(addee.card)))
 	    // make a note
 	    round.addAddee(addee);
+	    
+	    new SolutionAllCardsKnown(addee).solve(round);
+	  }
+	}
+	
+	private class SolutionAllCardsKnown(addee: Addee)  extends Solution {
+	  override def solve (round: Round): Unit = {
+	    // if we know all cards of that player
+	    val player: Testee = ctx.asTestee(addee.player);
+	    if (player.allCardsKnown) {
+	      println("SolutionAllCardsKnown: We know all cards of " + player.name +
+	          ", thus we remove all other cards still pending");
+	      val otherCards = ctx.otherCards(player.cards);
+	      player.markHasNot(otherCards);
+	    }
+	  }
+	}
+	
+	private class SolutionAllCardsRelated(removee: Removee)  extends SolutionRemove(removee) {
+	  override def solve (round: Round): Unit = {
+	    // if only n cards are left which may be only owned by this
+	    //   player and we know he has just n cards
+	    //   he must own all of those cards
+	    val testee: Testee = ctx.asTestee(removee.player);
+      val possibleCards: List[Card] = ctx.cards.diff(testee.notOwnedCards);
+      val allCardsRelated = possibleCards.length == testee.nCards
+      // but skip if he already owns all the cards (would be boring)
+
+	    if (allCardsRelated && !testee.allCardsKnown) {
+	      val n = testee.nCards;
+	      val pendingCards = testee.cards.diff(possibleCards);
+	      println("SolutionAllCardsRelated: Player " + testee.name +
+	          " has " + n + " cards\n  and only " + n + " cards are left for assignment to this player,\n  " +	         
+	          "thus he has all cards still pending: " + pendingCards);
+	      pendingCards.foreach(card => new SolutionAdd1(new Addee(testee, card)).solve(round) )
+	    }
 	  }
 	}
 	
@@ -187,7 +225,7 @@ class Solutions(val ctx: Context) {
 	private class SolutionAdd2_2(addee: Addee) extends SolutionAdd(addee) {
 	  // if there are two players and two cards
 	  override def solve (round: Round) = {
-	    println("SolutionAdd2_2");
+	    println("SolutionAdd2_2 " + addee.player.name);
 	    // add to the first round and then add remaining player
 	    new SolutionAdd1(addee).solve(round);
 	    val cards: List[Card] = round.cards;
@@ -311,6 +349,31 @@ Rule: if a shower has two bad cards, the third card must be his own
 * 
 * 
 * 
+Bellatrix Lestrange       : --- List(-, -, -, -, X)
+Peter Pettigrew           : --- List(2, ?, -, ?, -)
+Draco Malfoy              : --- List(-, -, X, -, -)
+Lucius Malfoy             : --- List(?, 1, -, -, -)
+Dolores Umbridge          : --- List(-, -, X, -, -)
+Grabbe and Goyle          : --- List(-, -, -, X, -)
+Große Halle               : --- List(X, -, -, -, -)
+Krankenflügel             : --- List(?, ?, -, -, ?)
+Raum der Wünsche          : --- List(?, ?, ?, ?, ?)
+Zaubertränke              : --- List(X, -, -, -, -)
+Pokalzimmer               : --- List(-, ?, -, 2, ?)
+Wahrsagen                 : --- List(-, -, -, ?, ?)
+Eulerei                   : --- List(-, 1, -, -, -)
+Bibliothek                : --- List(-, -, ?, -, -)
+Verteidigung gdd Künste   : --- List(-, -, X, -, -)
+Petrificus Totalus        : --- List(-, -, -, -, X)
+Schlafmittel              : --- List(?, 1, -, -, -)
+Unsichtbarkeitsschrank    : --- List(-, -, -, -, -)
+Portschlüssel             : --- List(-, -, X, -, -)
+Alraune                   : --- List(3, ?, -, -, -)
+Impedimenta               : --- List(-, X, -, -, -)
+* 
+* If we have determined all cards of a player (here 4: Heike)
+* we can be sure that this player does not have any of the
+* other cards in question (here: Bibliothek, Raum der Wünsche)
 *
 * 
 */
